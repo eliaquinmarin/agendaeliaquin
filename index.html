@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Publicaciones | Eliaquin Marín</title>
+    
+    <!-- Favicon Nativo de Agenda con Reloj para la pestaña del navegador -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3Ccircle cx='17' cy='17' r='4' fill='%2310b981' fill-opacity='0.2'%3E%3C/circle%3E%3Cpolyline points='17 15 17 17 19 18'%3E%3C/polyline%3E%3C/svg%3E">
+
+    <!-- Meta etiquetas para PWA e instalación en móviles -->
+    <meta name="theme-color" content="#10b981">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Agenda FE 418">
+    
+    <!-- Manifiesto de Aplicación en línea -->
+    <link rel="manifest" href="data:application/manifest+json;utf8,%7B%22name%22%3A%22Agenda%20de%20Publicaciones%20Eliaquin%20Mar%C3%ADn%22%2C%22short_name%22%3A%22Agenda%20FE%20418%22%2C%22description%22%3A%22Agenda%20y%20programas%20de%20Radio%20FE%204%3A18%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230b1329%22%2C%22theme_color%22%3A%22%2310b981%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Butf8%2C%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20512%20512%27%20width%3D%27192%27%20height%3D%27192%27%3E%3Crect%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%27100%27%20fill%3D%27%252310b981%27%2F%3E%3Cpath%20d%3D%27M128%20192v224h256V192H128zm128%20160a32%2032%200%201%201%200-64%2032%2032%200%200%201%200%2064zm0-96c-17.7%200-32%2014.3-32%2032v64c0%2017.7%2014.3%2032%2032%2032s32-14.3%2032-32v-64c0-17.7-14.3-32-32-32z%27%20fill%3D%27white%27%2F%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+
+    <!-- Tailwind CSS y Fuentes -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <style type="text/theme">
+        @variant dark (&:where(.dark, .dark *));
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-app: #0b1329;
+            --bg-card: #111a36;
+            --bg-input: #1b264f;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+            --bg-header: rgba(11, 19, 41, 0.85);
+        }
+
+        html.light {
+            --bg-app: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-input: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border-color: #cbd5e1;
+            --bg-header: rgba(241, 245, 249, 0.85);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .custom-card {
+            background-color: var(--bg-card);
+            border-color: var(--border-color);
+        }
+
+.custom-input {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+    /* Azul hielo: se integra perfectamente con tus elementos de radio/iglesia */
+    color: #bae6fd !important; 
+    opacity: 1 !important;     
+    display: block !important;
+    appearance: none;
+    font-weight: 600; /* Un poco más grueso para que destaque */
+}
+
+#search-input::placeholder {
+    color: #64748b !important; /* Un gris azulado que combina con el fondo */
+    opacity: 1 !important;
+}
+
+       .custom-header {
+            background-color: var(--bg-header);
+            border-color: var(--border-color);
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-emerald-500 selection:text-white overflow-x-hidden flex flex-col justify-between">
+
+    <!-- PORTADA PRINCIPAL / SELECTOR DE CANALES -->
+    <div id="split-selector" class="fixed inset-0 z-50 flex flex-col bg-[var(--bg-app)] overflow-y-auto w-full h-full">
+        <div class="flex-1 flex flex-col w-full min-h-screen">
+            
+            <!-- ENCABEZADO DE LA PORTADA -->
+            <div class="w-full relative flex flex-col items-center justify-center py-8 md:py-12 border-b border-[var(--border-color)] bg-[var(--bg-header)] backdrop-blur-md shrink-0 px-4">
+                <div class="absolute top-4 right-4 flex items-center gap-2">
+                    <button onclick="toggleTheme()" class="p-2 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 active:scale-95 transition-all cursor-pointer">
+                        <svg class="w-4 h-4 sun-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+                        <svg class="w-4 h-4 moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </button>
+                    <button onclick="requestNotificationPermission()" class="btn-notifications p-2 bg-emerald-500/10 text-emerald-500 rounded-xl transition-all cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 icon-bell">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                        </svg>
+                    </button>
+                </div>
+
+                <h1 class="text-3xl md:text-5xl font-black text-[var(--text-main)] tracking-tight bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
+                    Eliaquin Marín
+                </h1>
+                <p class="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest mt-2">
+                    Agenda de Publicaciones
+                </p>
+            </div>
+
+            <!-- DIVISIÓN DE CANALES -->
+            <div class="flex-1 flex flex-col md:flex-row w-full">
+                <button onclick="selectChannel('iglesia')" class="flex-1 min-h-[220px] md:min-h-0 bg-gradient-to-br from-[var(--bg-card)] to-blue-500/5 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950/30 border-b md:border-b-0 md:border-r border-[var(--border-color)] hover:from-[var(--bg-input)] dark:hover:from-slate-900 dark:hover:to-blue-900/40 transition-all duration-300 flex flex-col items-center justify-center p-6 group text-center cursor-pointer relative overflow-hidden">
+                    <div class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-blue-500/10 text-blue-500 dark:text-blue-400 flex items-center justify-center mb-4 border border-blue-500/20 shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.33l-7.5-5-7.5 5V21m16.5 0H3.75"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-[var(--text-main)] tracking-tight mb-1">Canal de la Iglesia</h2>
+                    <p class="text-xs text-blue-600 dark:text-blue-400 font-bold tracking-wide uppercase">Actividades, Oración y Mensajes</p>
+                    <span class="mt-4 px-4 py-2 bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/30 text-[11px] font-extrabold rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">Entrar al Canal</span>
+                </button>
+
+                <button onclick="selectChannel('radio')" class="flex-1 min-h-[220px] md:min-h-0 bg-gradient-to-br from-[var(--bg-card)] to-emerald-500/5 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950/20 border-b md:border-b-0 border-[var(--border-color)] hover:from-[var(--bg-input)] dark:hover:from-slate-900 dark:hover:to-emerald-900/30 transition-all duration-300 flex flex-col items-center justify-center p-6 group text-center cursor-pointer relative overflow-hidden">
+                    <div class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/20 shadow-2xl group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.342 10.49A3 3 0 0112 9a3 3 0 012.658 1.49m-5.316 0a3 3 0 005.316 0m-5.316 0a6 6 0 0010.632 0M12 13h.01M15 20H9a3 3 0 01-3-3V7a3 3 0 013-3h6a3 3 0 013 3v10a3 3 0 01-3 3z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-[var(--text-main)] tracking-tight mb-1">Canal de la Radio</h2>
+                    <p class="text-xs text-emerald-600 dark:text-emerald-400 font-bold tracking-wide uppercase">Programas, Publicidad y Más</p>
+                    <span class="mt-4 px-4 py-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[11px] font-extrabold rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">Entrar al Canal</span>
+                </button>
+            </div>
+
+            <!-- PIE DE PÁGINA DE LA PORTADA -->
+            <footer class="w-full text-center py-5 bg-[var(--bg-card)] border-t border-[var(--border-color)] shrink-0 px-4 z-10 transition-colors duration-300">
+                <p class="text-xs text-[var(--text-muted)] font-medium">
+                    Creado por <strong class="text-[var(--text-main)] font-bold">Eliaquin Marín</strong> — Más información al 
+                    <a href="https://wa.me/584125183677" target="_blank" class="text-emerald-600 dark:text-emerald-400 hover:underline font-bold inline-flex items-center gap-1 transition-colors">
+                        04125183677
+                    </a>
+                </p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- VISTA PRINCIPAL DEL CONTENIDO (OCULTA INICIALMENTE) -->
+    <div id="content-view" class="hidden min-h-screen flex flex-col">
+        
+        <!-- CABECERA PRINCIPAL -->
+        <header class="custom-header border-b backdrop-blur-md sticky top-0 z-40 transition-all">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                
+                <!-- Botón Volver Atrás -->
+              <button onclick="backToSelector()" class="flex items-center gap-2 px-3 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 text-xs font-bold rounded-xl border border-emerald-500/20 transition-all cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            Cambiar Canal
+        </button>
+                
+                <div class="flex items-center gap-3">
+                    <div id="header-indicator-icon" class="w-10 h-10 rounded-xl flex items-center justify-center"></div>
+                    <div>
+                        <h1 id="header-title" class="text-base font-extrabold tracking-tight">Canal</h1>
+                        <p class="text-[10px] opacity-70 font-bold tracking-wider uppercase">Agenda: <span class="text-emerald-500">FE 4:18</span></p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleTheme()" class="p-2 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 active:scale-95 transition-all cursor-pointer">
+                        <svg class="w-4 h-4 sun-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+                        <svg class="w-4 h-4 moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </button>
+                    <button onclick="requestNotificationPermission()" class="btn-notifications p-2 bg-emerald-500/10 text-emerald-500 rounded-xl transition-all cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 icon-bell">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- CUERPO PRINCIPAL DEL CANAL ACTIVO -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- BARRA DE BÚSQUEDA -->
+            <section class="mb-8">
+                <div class="relative max-w-md">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </span>
+                   <input type="text" 
+       id="search-input" 
+       oninput="filterAgenda()" 
+       placeholder="Buscar en este canal..." 
+       class="custom-input w-full pl-10 pr-4 py-3 border rounded-2xl text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm">
+                </div>
+            </section>
+
+            <!-- CONTENEDOR DE TARJETAS -->
+            <section id="agenda-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cargado dinámicamente según la selección -->
+            </section>
+        </main>
+    </div>
+
+    <!-- GUÍA DE INSTALACIÓN IOS/SAFARI -->
+    <div id="ios-guide" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="custom-card border max-w-sm w-full p-6 rounded-3xl text-center shadow-2xl">
+            <div class="w-16 h-16 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold mb-2">Instalar en tu iPhone / iPad</h3>
+            <p class="text-sm text-slate-400 mb-6">Para llevar la agenda en tu pantalla de inicio como una aplicación nativa:</p>
+            <ol class="text-left text-sm space-y-3 mb-6 opacity-90 pl-2">
+                <li class="flex items-center gap-3">
+                    <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold flex items-center justify-center">1</span>
+                    Presiona el botón de <strong class="text-emerald-500">Compartir</strong> abajo en Safari.
+                </li>
+                <li class="flex items-center gap-3">
+                    <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold flex items-center justify-center">2</span>
+                    Desliza y selecciona <strong class="text-emerald-500">Añadir a pantalla de inicio</strong>.
+                </li>
+            </ol>
+            <button onclick="toggleIosGuide()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl cursor-pointer">Entendido</button>
+        </div>
+    </div>
+
+    <!-- NOTIFICACIONES TOAST -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 translate-y-20 opacity-0 bg-slate-800 border border-slate-700 text-slate-100 px-5 py-3 rounded-2xl shadow-xl transition-all duration-300 flex items-center gap-3">
+        <span class="p-1 rounded-lg bg-emerald-500/10 text-emerald-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        </span>
+        <span id="toast-message" class="text-sm font-medium">Copiado al portapapeles</span>
+    </div>
+
+    <!-- CONFIGURACIÓN DE DATOS Y LÓGICA -->
+    <script>
+        const agendaData = [
+            { id: 1, categoria: 'Programa', titulo: 'Hombres de Valor', dias: ['Jueves'], hora: '10:00', descripcion: `⚡️ ¡YA ESTAMOS AL AIRE! 🦅\n\nHombres de hogar, de fe y de propósito: ya comenzó Hombres de Valor. Un espacio diseñado especialmente para equipar, inspirar y levantar a los hombres de esta generación bajo los principios de la Palabra.\n\nRetransmitido por la señal de Betel 102.1 FM. Conéctate en vivo desde donde estés haciendo clic aquí:\n👉  https://radiofe418.vercel.app/\n\n¡Sintoniza, edifícate y comparte este enlace con un amigo, hermano o compañero! 📻💪` },
+            { id: 2, categoria: 'Programa', titulo: 'De Todo un Poco', dias: ['Lunes', 'Miércoles', 'Viernes'], hora: '13:00', descripcion: `🕊️ ¡YA ESTAMOS AL AIRE! | DE TODO UN POCO 🎙️✨\n\nUn espacio variado y dinámico diseñado para acompañarte con la mejor música, temas de actualidad, reflexiones y buen contenido para edificar tu día. \n\n¡El programa ideal para disfrutar y compartir en cualquier lugar!\n\n🎧 Conéctate en vivo aquí: 👇\n\n🌐 https://radiofe418.vercel.app/\n\n📻 Retransmisión de Vida 100.5 FM\n\n¡Acompáñanos y comparte este enlace con tus amigos y familiares! 📲` },
+            { id: 3, categoria: 'Programa', titulo: 'Reflexionando con Jesús', dias: ['Miércoles'], hora: '10:00', descripcion: `¡ESTAMOS AL AIRE! 🎙️✨\n\nYa comenzó tu programa favorito "Reflexionando con Jesús", conducido por el Pastor Jesús Marín. Acompáñanos en este espacio de fe, bendición y palabra de Dios para tu vida.\n\n📅 ¿Cuándo? Todos los miércoles.\n⏰ ¿A qué hora? 10:00 AM.\n🎧 Escúchanos en vivo aquí: 👉 https://radiofe418.vercel.app/\n\n¡Conéctate ahora mismo y comparte esta bendición con alguien más! 🙏` },
+            { id: 4, categoria: 'Programa', titulo: 'Top 5 Musical', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '14:00', descripcion: `🔥 ¡ARRANCÓ EL CONTEO MÁS ESPERADO! 🎧📊\n\nYa estamos al aire con el Top 5 Musical de Radio FE 4:18. \n\n¿Cuál será la canción número uno de hoy? Sintoniza ya y descubre cuáles son los 5 temas que están rompiendo esquemas y bendiciendo tu vida con la mejor música y un message con propósito.\n\n⚠️ Programa EXCLUSIVO de nuestra plataforma digital.\n\n¡No te lo pierdas! Haz clic y entérate de las posiciones en vivo aquí:\n👉 https://radiofe418.vercel.app/ 🎶📲` },
+            { id: 5, categoria: 'Programa', titulo: 'Conexión 418', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '17:00', descripcion: `🚀 ¡YA ESTAMOS AL AIRE CON EL PROGRAMA ESTELAR! 🎙️✨\n\nPonte en sintonía con Conexión 418, el espacio oficial de Radio FE 4:18 diseñado para recargarte, conectarte con la mejor música, palabra y una atmósfera de fe que activará tu día.\n\n⚠️ Recuerda que este programa se transmite de forma EXCLUSIVA a través de nuestra plataforma digital.\n\n¡No te quedes por fuera! Haz clic, conéctate y vive la experiencia desde cualquier parte del mundo:\n👉 https://radiofe418.vercelapp/ 🌍📲` },
+            { id: 6, categoria: 'Programa', titulo: 'Mujeres con Propósito', dias: ['Lunes'], hora: '10:00', descripcion: `¡Conéctate con nosotros en este preciso momento! \n\nYa está al aire Mujeres con Propósito, un espacio diseñado especialmente para bendecir tu vida, renovar tus fuerzas y llenarte de fe.\n\nNo importa dónde estés, sintonízanos ahora mismo a través de nuestra radio online, retransmitiendo la señal en vivo de Betel 102.1 FM.\n\n🎧 Haz clic aquí y escucha ya: https://radiofe418.vercelapp/\n\n ¡Te estamos esperando! \nComparte este enlace con quien necesite una palabra de aliento hoy. 💖` },
+            { id: 7, categoria: 'Programa', titulo: 'En Sintonía con tu Propósito', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '19:00', descripcion: `🎯 ¡YA ESTAMOS AL AIRE! ✨\n\n¿Quieres descubrir, activar y caminar en el diseño que Dios tiene para ti? Ya comenzó En Sintonía con tu Propósito, un espacio creado para darte las herramientas y la dirección espiritual que necesitas para alcanzar tus metas.\n\n⚠️ Programa transmitido de manera EXCLUSIVA por nuestra señal digital.\n\nNo camines a ciegas, conéctate con tu destino hoy mismo haciendo clic aquí:\n👉 https://radiofe418.vercelapp/ 📲🌍` },
+            { id: 8, categoria: 'Programa', titulo: 'Escuela de Enseñanza Palabra de Vida', dias: ['Martes'], hora: '10:00', descripcion: `📖 ¡YA ESTAMOS AL AIRE! ✨\n\nComienza un nuevo tiempo de crecimiento espiritual en la Escuela de Enseñanza Palabra de Vida. Un espacio dedicado a profundizar en las Escrituras, aprender y fortalecer nuestra fe con verdades que transforman.\n\nRetransmitido por la señal de Betel 102.1 FM. Conéctate en vivo desde tu teléfono o computadora haciendo clic aquí:\n👉  https://radiofe418.vercelapp/\n\n¡Prepara tu Biblia, tu cuaderno de notas y edifícate con nosotros! 📻🙏` },
+            { id: 9, categoria: 'Programa', titulo: 'Familia Actual', dias: ['Martes'], hora: '08:00', descripcion: `🎙️ ¡YA ESTAMOS AL AIRE! \n\nNo te pierdas Familia Actual, un programa pensado para edificar, bendecir y fortalecer tu hogar. Retransmitido directamente a través de Betel 102.1 FM.\n\nAcompáñanos en vivo y conéctate con nosotros desde cualquier lugar haciendo clic aquí: \n👉 https://radiofe418.vercelapp/\n\n¡Sintoniza, comparte and edifícate en familia! 📻✨` },
+            
+            // Iniciativa de Estudio (Plan 6-3-9)
+            { id: 10, categoria: 'Iniciativa', titulo: 'Plan 6-3-9', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '06:00', descripcion: `🌅 *06:00 AM – Oración por Pastores y Líderes*\n🙏 “¡Buenos días! Comenzamos nuestra primera estación del Plan 6-3-9. A las 6:00 AM nos unimos como un solo cuerpo para orar por nuestros pastores y líderes, pidiendo sabiduría, protección y respaldo divino sobre sus vidas y ministerios.”` },
+            { id: 11, categoria: 'Iniciativa', titulo: 'Plan 6-3-9', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '15:00', descripcion: `☀️ *03:00 PM – Oración por nuestro país, Venezuela*\n🇻🇪 “Bendecida tarde. Llegamos a nuestra segunda estación del Plan 6-3-9. A las 3:00 PM levantamos un clamor unánime por nuestra amada nación, Venezuela, declarando paz, bendición y restauración sobre cada rincón de nuestra tierra.”` },
+            { id: 12, categoria: 'Iniciativa', titulo: 'Plan 6-3-9', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '21:00', descripcion: `🌙 *09:00 PM – Oración por las Familias*\n🏡 “Al cerrar el día, nos encontramos en la tercera estación del Plan 6-3-9. A las 9:00 PM nos unimos para bendecir, proteger y orar por los hogares y las familias, declarando que la paz de Dios gobierna cada casa.”` },
+            
+            // Mensaje Personalizado Diario - Iglesia Bautista FE 4:18 (Agregado Dinámico)
+{ 
+    id: 19, 
+    categoria: 'Iniciativa', 
+    titulo: 'Mensaje Diario de Bendición', 
+    dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], 
+    hora: '07:00', 
+    esMensajeDinamico: true,
+    descripcionesPorDia: {
+        'Lunes': `🌅 *¡Buenos días!*\n\nLa *Iglesia Bautista FE 4:18* te desea un bendecido inicio de semana. Comenzamos estos próximos días recordando que nuestra confianza no está en lo que vemos, sino en Aquel que todo lo puede.\n\n📖 *Palabra de hoy:*\n> _"Porque por fe andamos, no por vista."_ — *2 Corintios 5:7*\n\nEncara esta semana con fe. Te invitamos a permanecer conectado con nosotros y conocer más de nuestras actividades y recursos a través de nuestro sitio web:\n👉 https://ib-fe418.vercelapp/`,
+        'Martes': `🌅 *¡Buenos días!*\n\nLa *Iglesia Bautista FE 4:18* te da la bienvenida a este nuevo día. Que la paz de Dios, que sobrepasa todo entendimiento, guarde hoy tu corazón y tus pensamientos.\n\n📖 *Palabra de hoy:*\n> _"Jehová dará poder a su pueblo; Jehová bendecirá a su pueblo con paz."_ — *Salmo 29:11*\n\n¡Camina seguro en Su fuerza! Recuerda que puedes acceder a todas nuestras transmisiones y plataformas digitales desde un solo lugar:\n👉 https://ib-fe418.vercelapp/`,
+        'Miércoles': `🌅 *¡Buenos días!*\n\nLlegamos a mitad de semana y la *Iglesia Bautista FE 4:18* te saluda con la certeza de que las misericordias del Señor se renuevan sobre tu vida cada mañana.\n\n📖 *Palabra de hoy:*\n> _"Por la misericordia de Jehová no hemos sido consumidos, porque nunca decayeron sus misericordias. Nuevas son cada mañana; grande es tu fidelidad."_ — *Lamentaciones 3:22-23*\n\n¡Su fidelidad nunca falla! Encuentra más reflexiones y conéctate con nuestra comunidad ingresando aquí:\n👉 https://ib-fe418.vercelapp/`,
+        'Jueves': `🌅 *¡Buenos días!*\n\nLa *Iglesia Bautista FE 4:18* te desea un día lleno de la gracia del Señor. No importa el desafío que enfrentes hoy, recuerda quién va delante de ti.\n\n📖 *Palabra de hoy:*\n> _"Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo en dondequiera que vayas."_ — *Josué 1:9*\n\n¡Sé valiente, el Señor está contigo! Mantente al tanto de nuestros próximos estudios y reuniones en nuestro sitio oficial:\n👉 https://ib-fe418.vercelapp/`,
+        'Viernes': `🌅 *¡Buenos días!*\n\nLa *Iglesia Bautista FE 4:18* te da los buenos días. Al acercarse el fin de semana, nos tomamos un momento para agradecer al Señor por su constante refugio y protección.\n\n📖 *Palabra de hoy:*\n> _"Dios es nuestro amparo y fortaleza, nuestro pronto auxilio en las tribulaciones."_ — *Salmo 46:1*\n\nDescansa en Su protección y comparte esta bendición. Para revisar nuestra agenda de actividades del fin de semana, visítanos en:\n👉 https://ib-fe418.vercelapp/`,
+        'Sábado': `🌅 *¡Buenos días!*\n\nLa *Iglesia Bautista FE 4:18* te desea un bendecido y feliz sábado. Hoy es un día perfecto para preparar el corazón y meditar en las grandezas de Dios en familia.\n\n📖 *Palabra de hoy:*\n> _"Alabad a Jehová, porque él es bueno; porque para siempre es su misericordia."_ — *Salmo 136:1*\n\nAgradece por cada detalle de Su bondad. Si deseas contactarnos de forma directa o unirte a nuestros grupos, tienes el acceso directo en nuestra web:\n👉 https://ib-fe418.vercelapp/`,
+        'Domingo': `🌅 *¡Buenos días y bendecido día del Señor!*\n\nLa *Iglesia Bautista FE 4:18* te da la bienvenida al día de congregarnos y adorar juntos. Que tu alma se alegre al entrar en la presencia de nuestro Salvador.\n\n📖 *Palabra de hoy:*\n> _"Yo me alegré con los que me decían: A la casa de Jehová iremos."_ — *Salmo 122:1*\n\n¡Te esperamos para adorar juntos! Si no puedes acompañarnos de forma presencial, recuerda que puedes seguir los detalles e interactuar con el canal desde nuestra plataforma:\n👉 https://ib-fe418.vercelapp/`
+    }
+},
+// Nuevas actividades de Ministerios
+{ 
+    id: 27, 
+    canal: 'iglesia', 
+    categoria: 'Actividad', 
+    titulo: 'Reunión de Damas: Unión Femenil Jireh', 
+    dias: ['Jueves'], 
+    hora: '17:00', 
+    descripcion: `🌸 *Unión Femenil Jireh: Reunión de Damas*\n\nUn espacio dedicado al compañerismo, la edificación mutua y el crecimiento en el servicio a Dios.\n\n📖 *"Mujer virtuosa, ¿quién la hallará? Porque su estima sobrepasa largamente a la de las piedras preciosas."* — Proverbios 31:10\n\n¡Te esperamos para compartir una tarde de bendición! Conoce más sobre nuestros grupos y actividades en nuestra web oficial:\n👉 https://ib-fe418.vercel.app/` 
+},
+{ 
+    id: 28, 
+    canal: 'iglesia', 
+    categoria: 'Actividad', 
+    titulo: 'Reunión de Hombres: Unión Varonil Discípulos de Cristo', 
+    dias: ['Martes'], 
+    hora: '19:00', 
+    descripcion: `🛡️ *Unión Varonil Discípulos de Cristo: Reunión de Hombres*\n\nUn tiempo de fortalecimiento, carácter y compromiso para los hombres que buscan seguir el diseño de Dios.\n\n📖 *"Sed hombres, esforzaos, y pelead."* — 1 Crónicas 19:13\n\n¡Asume el reto de crecer en tu fe! Encuentra todos los detalles y recursos para nuestra comunidad aquí:\n👉 https://ib-fe418.vercel.app/` 
+},
+{ 
+    id: 20, 
+    categoria: 'Iniciativa', 
+    titulo: 'Reflexión Vespertina de Fuerza', 
+    dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], 
+    hora: '14:00', 
+    esMensajeDinamico: true,
+    descripcionesPorDia: {
+        'Lunes': `☀️ *¡Buenas tardes!*\n\nLa *Iglesia Bautista FE 4:18* te acompaña a mitad de este lunes. Si el día se ha tornado pesado, recuerda que Dios es el proveedor de nuevas fuerzas para continuar.\n\n📖 *Palabra de esta tarde:*\n> _"Él da esfuerzo al cansado, y multiplica las fuerzas al que no tiene ningunas."_ — *Isaías 40:29*\n\n¡Renueva tu ánimo en Él! No olvides que puedes revisar nuestros devocionales y recursos semanales en nuestra web:\n👉 https://ib-fe418.vercelapp/`,
+        'Martes': `☀️ *¡Buenas tardes!*\n\nLa *Iglesia Bautista FE 4:18* te saluda en esta tarde. Que en medio de tus labores y ocupaciones te des un momento para descansar en el amor del Señor.\n\n📖 *Palabra de esta tarde:*\n> _"El hacer tu voluntad, Dios mío, me ha agradado, y tu ley está en medio de mi corazón."_ — *Salmo 40:8*\n\n¡Que Su guía dirija tus pasos hoy! Mantente conectado con toda nuestra comunidad a través de nuestra plataforma oficial:\n👉 https://ib-fe418.vercelapp/`,
+        'Miércoles': `☀️ *¡Buenas tardes!*\n\nLa *Iglesia Bautista FE 4:18* te desea una bendecida tarde de miércoles. Que la palabra de Cristo habite en abundancia en tu vida durante el resto de la jornada.\n\n📖 *Palabra de esta tarde:*\n> _"La palabra de Cristo habite en abundancia en vosotros..."_ — *Colosenses 3:16*\n\n¡Medita en Sus promesas! Si deseas volver a escuchar nuestros últimos mensajes, encuéntralos directamente aquí:\n👉 https://ib-fe418.vercelapp/`,
+        'Jueves': `☀️ *¡Buenas tardes!*\n\nLa *Iglesia Bautista FE 4:18* te envía un saludo fraterno en esta tarde. Pon en manos del Señor tus proyectos y deja que Él alinee tus metas.\n\n📖 *Palabra de esta tarde:*\n> _"Encomienda a Jehová tus obras, y tus pensamientos serán afirmados."_ — *Proverbios 16:3*\n\n¡Confía tus planes al Creador! Recuerda que puedes enterarte de nuestras reuniones de oración programadas visitando nuestra web:\n👉 https://ib-fe418.vercelapp/`,
+        'Viernes': `☀️ *¡Buenas tardes!*\n\nLa *Iglesia Bautista FE 4:18* te desea una excelente tarde de viernes. Ya casi termina la semana laboral; tómate un instante para reconocer la fidelidad de Dios en estos días.\n\n📖 *Palabra de esta tarde:*\n> _"Estad firmes y constantes, creciendo en la obra del Señor siempre..."_ — *1 Corintios 15:58*\n\n¡Tu trabajo en el Señor no es en vano! Consulta los horarios de nuestras actividades del fin de semana ingresando a:\n👉 https://ib-fe418.vercelapp/`,
+        'Sábado': `☀️ *¡Buenas tardes!*\n\nLa *Iglesia Bautista FE 4:18* espera que pases una provechosa tarde de sábado en familia. Es un tiempo ideal para edificar el hogar bajo el fundamento de la Palabra.\n\n📖 *Palabra de esta tarde:*\n> _"Y estas palabras que yo te mando hoy, estarán sobre tu corazón; y las repetirás a tus hijos..."_ — *Deuteronomio 6:6-7*\n\n¡Bendice a tu familia hoy! Si deseas unirte a alguno de nuestros ministerios o grupos de estudio, haz clic en nuestro enlace:\n👉 https://ib-fe418.vercelapp/`,
+        'Domingo': `☀️ *¡Buenas tardes!*\n\nLa *Iglesia Bautista FE 4:18* te saluda en este bendecido día del Señor. Esperamos que el tiempo de comunión y alabanza haya enriquecido profundamente tu espíritu.\n\n📖 *Palabra de esta tarde:*\n> _"Mas la hora viene, y ahora es, cuando los verdaderos adoradores adorarán al Padre en espíritu y en verdad."_ — *Juan 4:23*\n\n¡Sigamos glorificando Su nombre! Accede a los puntos interactivos de nuestra comunidad y mantén la comunión en nuestra web:\n👉 https://ib-fe418.vercelapp/`
+    }
+},
+{ 
+    id: 21, 
+    categoria: 'Iniciativa', 
+    titulo: 'Mensaje Nocturno de Paz', 
+    dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], 
+    hora: '20:30', 
+    esMensajeDinamico: true,
+    descripcionesPorDia: {
+        'Lunes': `🌙 *¡Buenas noches!*\n\nLa *Iglesia Bautista FE 4:18* te invita a cerrar este lunes entregando toda carga al Señor. Puedes descansar sabiendo que Él cuida de ti.\n\n📖 *Palabra para descansar:*\n> _"En paz me acostaré, y asimismo dormiré; porque solo tú, Jehová, me haces vivir confiado."_ — *Salmo 4:8*\n\n¡Duerme en perfecta calma! Antes de descansar, te invitamos a dejar tus motivos de oración en nuestro espacio digital:\n👉 https://ib-fe418.vercelapp/`,
+        'Martes': `🌙 *¡Buenas noches!*\n\nLa *Iglesia Bautista FE 4:18* te desea un reparador descanso. Dios no se cansa ni duerme; tu vida está perfectamente resguardada en Sus manos.\n\n📖 *Palabra para descansar:*\n> _"No dará tu pie al resbaladero, ni se dormirá el que te guarda."_ — *Salmo 121:3*\n\n¡Confía en Su cuidado constante! Mantente al tanto de nuestros devocionales y enlaces comunitarios visitando nuestro sitio web:\n👉 https://ib-fe418.vercelapp/`,
+        'Miércoles': `🌙 *¡Buenas noches!*\n\nLa *Iglesia Bautista FE 4:18* te acompaña al concluir este miércoles. Trae a tu mente las bondades del Señor y permite que Su paz gobierne tus horas de sueño.\n\n📖 *Palabra para descansar:*\n> _"Tú guardarás en completa paz a aquel cuyo pensamiento en ti persevera; porque en ti ha confiado."_ — *Isaías 26:3*\n\n¡Que tu mente descanse en Él! Conéctate con nosotros para ver detalles de las próximas actividades ingresando aquí:\n👉 https://ib-fe418.vercelapp/`,
+        'Jueves': `🌙 *¡Buenas noches!*\n\nLa *Iglesia Bautista FE 4:18* te desea una noche llena de serenidad. Termina el día agradeciendo por la provisión y el amparo del Padre Celestial.\n\n📖 *Palabra para descansar:*\n> _"Bendito sea el Señor cada día; Dios de nuestra salvación nos colma de beneficios."_ — *Salmo 68:19*\n\n¡Agradece y descansa seguro! Si deseas acceder de manera rápida a nuestros canales oficiales de contacto, hazlo mediante nuestra web:\n👉 https://ib-fe418.vercelapp/`,
+        'Viernes': `🌙 *¡Buenas noches!*\n\nLa *Iglesia Bautista FE 4:18* te desea un feliz descanso al inicio de este fin de semana. Despójate de todo afán y permite que tu cuerpo y espíritu se restauren.\n\n📖 *Palabra para descansar:*\n> _"Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar."_ — *Mateo 11:28*\n\n¡Halla descanso en Su gracia! Para conocer los horarios y accesos a nuestra escuela dominical y cultos, visítanos en:\n👉 https://ib-fe418.vercelapp/`,
+        'Sábado': `🌙 *¡Buenas noches!*\n\nLa *Iglesia Bautista FE 4:18* te desea una bendecida noche de sábado. Nos preparamos para el día de mañana con un corazón expectante y listo para recibir Su Palabra.\n\n📖 *Palabra para descansar:*\n> _"Bueno es alabarte, oh Jehová, y cantar salmos a tu nombre, oh Altísimo; anunciar por la mañana tu misericordia, y tu fidelidad cada noche."_ — *Salmo 92:1-2*\n\n¡Que tengas dulces sueños! Recuerda que tienes el botón de interacción y transmisiones listo en nuestra plataforma:\n👉 https://ib-fe418.vercelapp/`,
+        'Domingo': `🌙 *¡Buenas noches!*\n\nLa *Iglesia Bautista FE 4:18* despide este día del Señor deseándote un descanso reparador. Que comiences la nueva jornada con la fe fortalecida por Su Espíritu.\n\n📖 *Palabra para descansar:*\n> _"Y la paz de Dios, que sobrepasa todo entendimiento, guardará vuestros corazones y vuestros pensamientos en Cristo Jesús."_ — *Filipenses 4:7*\n\n¡Comienza tu semana en victoria! Quedamos a tu entera disposición y en constante comunión a través de nuestro sitio oficial:\n👉 https://ib-fe418.vercelapp/`
+    }
+},
+
+            // --- NUEVAS ACTIVIDADES DE LA IGLESIA AGREGADAS ---
+            { id: 22, canal: 'iglesia', categoria: 'Actividad', titulo: 'Servicio de Reconciliación y Oración', dias: ['Miércoles'], hora: '18:00', descripcion: `🙏 *Servicio de Reconciliación y Oración*\n\nUn tiempo especial para restaurar nuestro espíritu y clamar a Dios en unidad.\n\n📖 *"Confesaos vuestras ofensas unos a otros, y orad unos por otros, para que seáis sanados."* — Santiago 5:16\n\nTe esperamos para compartir juntos este momento de renovación. Conoce más de nuestra iglesia y mantente conectado aquí:\n👉 https://ib-fe418.vercel.app/` },
+            { id: 23, canal: 'iglesia', categoria: 'Actividad', titulo: 'Los Rayitos del Sol', dias: ['Sábado'], hora: '09:00', descripcion: `☀️ *Los Rayitos del Sol (9:00 AM - 12:00 M)*\n\nFormando los corazones de los más pequeños con el amor y la alegría de Cristo. ¡Un espacio de diversión y aprendizaje!\n\n📖 *"Dejad a los niños venir a mí, y no se lo impidáis; porque de los tales es el reino de Dios."* — Marcos 10:14\n\nTrae a tus niños a disfrutar de un lugar diseñado para ellos. Más información en nuestra web oficial:\n👉 https://ib-fe418.vercel.app/` },
+            { id: 24, canal: 'iglesia', categoria: 'Actividad', titulo: 'Princesas del Reino y Embajadores del Rey', dias: ['Sábado'], hora: '15:00', descripcion: `👑 *Princesas del Reino y Embajadores del Rey (3:00 PM - 5:00 PM)*\n\nEquipando a la próxima generación con los valores y principios inquebrantables del Reino de Dios.\n\n📖 *"Instruye al niño en su camino, Y aun cuando fuere viejo no se apartará de él."* — Proverbios 22:6\n\nNuestros preadolescentes y jóvenes también tienen su lugar especial. Acompáñanos y visita nuestro sitio web:\n👉 https://ib-fe418.vercel.app/` },
+            { id: 25, canal: 'iglesia', categoria: 'Actividad', titulo: 'Discipulado y Doctrina', dias: ['Sábado'], hora: '17:00', descripcion: `📖 *Discipulado y Doctrina*\n\nProfundizando en la Palabra para cimentar nuestra fe y crecer espiritualmente en comunidad.\n\n📖 *"Toda la Escritura es inspirada por Dios, y útil para enseñar, para redargüir, para corregir, para instruir en justicia."* — 2 Timoteo 3:16\n\nFortalece tus bases espirituales con nosotros. Detalles, horarios y más recursos en nuestra plataforma:\n👉 https://ib-fe418.vercel.app/` },
+            { id: 26, canal: 'iglesia', categoria: 'Actividad', titulo: 'Escuela Bíblica Dominical', dias: ['Domingo'], hora: '09:00', descripcion: `⛪ *Escuela Bíblica Dominical*\n\nEl mejor lugar para comenzar tu semana: estudiando y aplicando el manual de vida que Dios nos dejó.\n\n📖 *"Lámpara es a mis pies tu palabra, Y lumbrera a mi camino."* — Salmo 119:105\n\nPrepárate para recibir el alimento que tu alma necesita cada domingo por la mañana. Conéctate con nosotros aquí:\n👉 https://ib-fe418.vercel.app/` },
+            
+            // Publicidades
+            { id: 13, categoria: 'Publicidad', titulo: 'Servi Autos Roraima', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '06:30', descripcion: `🏎️ *Servi Autos Roraima* | Todo lo que tu auto necesita.\n👉 instagram.com/serviautosroraima` },
+            { id: 14, categoria: 'Publicidad', titulo: 'VIP SHOP', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '08:30', descripcion: `🛍️ *VIP SHOP* | Estilo, tendencia y la mejor experiencia de compra.\n👉 vipshopbarinas.vercelapp` },
+            { id: 15, font_bold: true, categoria: 'Publicidad', titulo: 'Directorio Unisalud', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '12:30', descripcion: `🏥 *Directorio Unisalud* | Todo el sector salud en un solo lugar: médicos, farmacias y centros asistenciales.\n👉 directoriounisalud.com` },
+            { id: 16, categoria: 'Publicidad', titulo: 'Contexto Media Group', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '15:30', descripcion: `🌐 *Contexto Media Group* | Agencia de relaciones públicas, communication estratégica y portales digitales.\n👉 contextomediagroup.com` },
+            { id: 17, categoria: 'Publicidad', titulo: 'Iglesia Bautista FE 4:18', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '18:30', descripcion: `⛪ *Iglesia Bautista FE 4:18* | No mirando las cosas que se ven, sino las que no se ven.\n👉 ib-fe418.vercelapp` },
+            { id: 18, categoria: 'Publicidad', titulo: 'Tatihana Pozo Puccini', dias: ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'], hora: '20:30', descripcion: `✍️ *Tatihana Pozo Puccini* | Espacio oficial de la comunicadora, autora, conferencista y capellana.\n👉 tatihanapozopuccini.com` }
+        ];
+
+        let activeChannel = null;
+        const notifiedEvents = new Set();
+        const daysMap = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+        function getShareText(item) {
+            // Manejo de la descripción dinámica por día de la semana
+            if (item.esMensajeDinamico) {
+                const diaHoy = daysMap[new Date().getDay()];
+                return item.descripcionesPorDia[diaHoy] || item.descripcionesPorDia['Lunes'];
+            }
+
+            let baseText = item.descripcion;
+            
+            // Para evitar que el link de la radio se agregue automáticamente a los mensajes eclesiásticos
+            if (item.canal !== 'iglesia' && item.titulo !== "Plan 6-3-9" && item.titulo !== "Mensaje Diario de Bendición") {
+                if (!baseText.includes("https://radiofe418.vercel.app/")) {
+                    baseText += "\n\n📻 Sintoniza nuestra señal en vivo aquí: 👇\n🌐 https://radiofe418.vercel.app/";
+                }
+            }
+            return baseText;
+        }
+
+        function selectChannel(channel) {
+            activeChannel = channel;
+            document.getElementById('split-selector').classList.add('hidden');
+            document.getElementById('content-view').classList.remove('hidden');
+            
+            const titleElement = document.getElementById('header-title');
+            const iconElement = document.getElementById('header-indicator-icon');
+            
+            if(channel === 'iglesia') {
+                titleElement.innerText = "Canal de la Iglesia";
+                iconElement.className = "w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center";
+                iconElement.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.33l-7.5-5-7.5 5V21m16.5 0H3.75"></path></svg>`;
+            } else {
+                titleElement.innerText = "Canal de la Radio";
+                iconElement.className = "w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center";
+                iconElement.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.342 10.49A3 3 0 0112 9a3 3 0 012.658 1.49m-5.316 0a3 3 0 005.316 0m-5.316 0a6 6 0 0010.632 0M12 13h.01M15 20H9a3 3 0 01-3-3V7a3 3 0 013-3h6a3 3 0 013 3v10a3 3 0 01-3 3z"></path></svg>`;
+            }
+
+            document.getElementById('search-input').value = '';
+            filterAgenda();
+        }
+
+        function backToSelector() {
+            activeChannel = null;
+            document.getElementById('content-view').classList.add('hidden');
+            document.getElementById('split-selector').classList.remove('hidden');
+        }
+
+        function renderAgenda(data) {
+            const container = document.getElementById('agenda-container');
+            container.innerHTML = '';
+
+            const finalFilteredData = data.filter(item => {
+                // Determinar si el elemento pertenece a la iglesia (Plan 6-3-9, Mensajes Dinámicos o el nuevo atributo canal: iglesia)
+                const esDeIglesia = item.titulo === 'Plan 6-3-9' || item.esMensajeDinamico === true || item.canal === 'iglesia';
+
+                if (activeChannel === 'iglesia') {
+                    // En el canal de la iglesia, solo pasa lo que es de la iglesia
+                    return esDeIglesia;
+                } else if (activeChannel === 'radio') {
+                    // En el canal de la radio, se oculta estrictamente todo lo de la iglesia
+                    return !esDeIglesia;
+                }
+                
+                return true;
+            });
+
+            if(finalFilteredData.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-500 font-medium">
+                        No se encontraron difusiones asignadas en este espacio.
+                    </div>`;
+                return;
+            }
+
+            finalFilteredData.forEach(item => {
+                let tagColor = 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+                if(item.categoria === 'Publicidad') tagColor = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+                if(item.categoria === 'Iniciativa') tagColor = 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+
+                const optimizedText = getShareText(item);
+                const card = document.createElement('div');
+                card.className = "custom-card border rounded-3xl p-6 transition-all flex flex-col justify-between group shadow-lg";
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs px-2.5 py-1.5 rounded-xl font-bold border ${tagColor}">${item.categoria}</span>
+                            <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-xl">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0114 0z"></path></svg>
+                                ${item.hora}
+                            </div>
+                        </div>
+                        <h3 class="text-base font-extrabold mb-1 tracking-tight group-hover:text-emerald-500 transition-colors duration-200">${item.titulo}</h3>
+                        <p class="text-xs font-bold opacity-60 mb-3">${item.dias.join(', ')}</p>
+                        <div class="text-xs bg-slate-950/20 dark:bg-slate-950/40 border border-slate-700/20 dark:border-slate-800/60 rounded-2xl p-4 mb-6 whitespace-pre-wrap break-words h-44 overflow-y-auto leading-relaxed opacity-90">${optimizedText}</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="copyText(\`${encodeURIComponent(optimizedText)}\`)" class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 dark:text-slate-300 font-bold text-xs rounded-xl border border-slate-700/20 dark:border-slate-800/40 transition-all cursor-pointer">
+                            Copiar Texto
+                        </button>
+                        <button onclick="shareWhatsApp(\`${encodeURIComponent(optimizedText)}\`)" class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.411 0 11.989 0c3.183.001 6.177 1.24 8.426 3.492 2.249 2.252 3.483 5.249 3.482 8.432-.004 6.639-5.355 11.987-11.931 11.987-2.006-.002-3.978-.507-5.73-1.472L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.413 9.863-9.849.002-2.634-1.023-5.11-2.89-6.98-1.867-1.868-4.35-2.897-6.987-2.899-5.444 0-9.867 4.414-9.87 9.85-.001 1.761.462 3.479 1.341 5.011l-.995 3.637 3.718-.975zm13.114-6.398c-.296-.149-1.753-.865-2.024-.964-.271-.099-.468-.148-.666.149-.197.297-.764.964-.937 1.162-.172.197-.345.222-.641.074-.296-.149-1.253-.462-2.386-1.472-.882-.787-1.478-1.759-1.65-2.056-.172-.297-.018-.458.13-.606.134-.133.297-.347.445-.52.149-.174.198-.298.297-.496.099-.198.05-.371-.025-.52-.075-.149-.666-1.608-.912-2.201-.24-.577-.483-.499-.666-.508-.171-.008-.369-.01-.567-.01-.197 0-.518.074-.79.371-.271.297-1.036 1.015-1.036 2.477 0 1.462 1.062 2.873 1.211 3.071.149.198 2.09 3.193 5.063 4.479.707.306 1.259.489 1.69.626.711.226 1.36.194 1.872.118.571-.085 1.753-.717 2.001-1.411.248-.694.248-1.289.173-1.411-.074-.123-.272-.198-.57-.347z"/></svg>
+                            WhatsApp
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function shareWhatsApp(encodedText) {
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(decodeURIComponent(encodedText))}`, '_blank');
+        }
+
+        function copyText(encodedText) {
+            navigator.clipboard.writeText(decodeURIComponent(encodedText)).then(() => {
+                showToast("¡Texto copiado exitosamente!");
+            }).catch(() => {
+                showToast("Error al copiar", true);
+            });
+        }
+
+        function filterAgenda() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = agendaData.filter(item => {
+                // Permitir buscar por los textos dinámicos internos si aplica
+                const matchesTextoDinamico = item.esMensajeDinamico && Object.values(item.descripcionesPorDia).some(desc => desc.toLowerCase().includes(query));
+                return item.titulo.toLowerCase().includes(query) || item.hora.includes(query) || (item.descripcion && item.descripcion.toLowerCase().includes(query)) || matchesTextoDinamico;
+            });
+            renderAgenda(filtered);
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.className = `fixed bottom-5 right-5 z-50 transform translate-y-0 opacity-100 bg-slate-900 border ${isError ? 'border-red-500/30 text-red-400' : 'border-slate-800 text-slate-100'} px-5 py-3 rounded-2xl shadow-2xl transition-all duration-300 flex items-center gap-3`;
+            setTimeout(() => {
+                toast.className = "fixed bottom-5 right-5 z-50 translate-y-20 opacity-0 bg-slate-900 border border-slate-800 text-slate-100 px-5 py-3 rounded-2xl shadow-2xl transition-all duration-300 flex items-center gap-3";
+            }, 3000);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const moons = document.querySelectorAll('.moon-icon');
+            const suns = document.querySelectorAll('.sun-icon');
+            
+            if (html.classList.contains('light')) {
+                html.classList.replace('light', 'dark');
+                moons.forEach(m => m.classList.remove('hidden'));
+                suns.forEach(s => s.classList.add('hidden'));
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.classList.replace('dark', 'light');
+                suns.forEach(s => s.classList.remove('hidden'));
+                moons.forEach(m => m.classList.add('hidden'));
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function requestNotificationPermission() {
+            if ("Notification" in window) {
+                Notification.requestPermission().then(updateBellUI);
+            }
+        }
+
+        function updateBellUI(permission) {
+            const icons = document.querySelectorAll('.icon-bell');
+            icons.forEach(icon => {
+                if (permission === "granted") {
+                    icon.className = "w-4 h-4 text-emerald-500 fill-emerald-500/20 animate-pulse icon-bell";
+                } else if (permission === "denied") {
+                    icon.className = "w-4 h-4 text-red-500 icon-bell";
+                }
+            });
+        }
+
+        function startAgendaDaemon() {
+            setInterval(() => {
+                const ahora = new Date();
+                const diaSemanaEs = daysMap[ahora.getDay()];
+                const tiempoFuturo = new Date(ahora.getTime() + 2 * 60 * 1000);
+                const horaObjetivo = `${String(tiempoFuturo.getHours()).padStart(2, '0')}:${String(tiempoFuturo.getMinutes()).padStart(2, '0')}`;
+
+                agendaData.forEach(item => {
+                    if (item.dias.includes(diaSemanaEs) && item.hora === horaObjetivo) {
+                        const uniqueKey = `${item.id}-${horaObjetivo}-${ahora.getDate()}`;
+                        if (!notifiedEvents.has(uniqueKey)) {
+                            notifiedEvents.add(uniqueKey);
+                            if (Notification.permission === "granted") {
+                                new Notification(`🔔 Próxima Difusión`, { body: `Faltan 2 min para "${item.titulo}" (${item.hora}).` });
+                            }
+                            showToast(`Preparando difusión para "${item.titulo}" en 2 minutes.`);
+                        }
+                    }
+                });
+            }, 10000);
+        }
+
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.documentElement.classList.replace('dark', 'light');
+                document.querySelectorAll('.sun-icon').forEach(s => s.classList.remove('hidden'));
+                document.querySelectorAll('.moon-icon').forEach(m => m.classList.add('hidden'));
+            }
+            startAgendaDaemon();
+            if ("Notification" in window) updateBellUI(Notification.permission);
+        };
+    </script>
+</body>
+</html>
