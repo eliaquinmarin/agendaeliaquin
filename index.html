@@ -558,5 +558,11 @@
             if ("Notification" in window) updateBellUI(Notification.permission);
         };
     </script>
+  <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(() => console.log('Service Worker registrado'));
+}
+  </script>
 </body>
 </html>
