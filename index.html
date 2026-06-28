@@ -624,7 +624,6 @@ async function requestNotificationPermission() {
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
   import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
 
-  // Configuración de tu proyecto (Copiado de Firebase Console)
   const firebaseConfig = {
     apiKey: "AIzaSyDdF_65mATjkH71yLFW97fvwQX5Sexf9Tw",
     authDomain: "notificacionesagenda.firebaseapp.com",
@@ -634,29 +633,28 @@ async function requestNotificationPermission() {
     appId: "1:168849532431:web:f9552e888ece647672e57a"
   };
 
-  // Inicializar
   const app = initializeApp(firebaseConfig);
   const messaging = getMessaging(app);
 
-  // Función para pedir permiso y obtener el token
-  async function activarNotificaciones() {
+  // Hacemos la función global para que el botón onclick pueda encontrarla
+  window.activarNotificaciones = async () => {
     try {
       const token = await getToken(messaging, { 
-        vapidKey: 'BBRM4VTrgnH8r5IvX4V6Twx3DXZaFnRXzWb_Y8XtLNYmyx3fGm0xMoGepQdYsFvMp7QFktExFmYAX_YsmxGY7HE' // Esta llave la sacas en Firebase Console > Messaging > Web Push
+        vapidKey: 'BBRM4VTrgnH8r5IvX4V6Twx3DXZaFnRXzWb_Y8XtLNYmyx3fGm0xMoGepQdYsFvMp7QFktExFmYAX_YsmxGY7HE'
       });
       
       if (token) {
-        console.log("Token obtenido:", token);
-        // AQUÍ DEBES GUARDAR EL TOKEN EN TU BASE DE DATOS
-        // Ejemplo: await supabase.from('push_subscriptions').insert({ token: token });
+        console.log("Token exitoso:", token);
+        alert("¡Notificaciones activadas correctamente!");
+        // Aquí enviarías el token a tu backend
+      } else {
+        console.warn("No se pudo obtener el token.");
       }
     } catch (err) {
-      console.error("Error al obtener token:", err);
+      console.error("Error al activar notificaciones:", err);
+      alert("Error: Asegúrate de permitir las notificaciones en el navegador.");
     }
-  }
-
-  // Agrega un botón en tu HTML para llamar a esta función:
-  // <button onclick="activarNotificaciones()">🔔 Activar Notificaciones</button>
+  };
 </script>
 </body>
 </html>
