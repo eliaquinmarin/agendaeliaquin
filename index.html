@@ -598,5 +598,22 @@
         });
     }
 </script>
+
+<script>
+    // ... tu código existente (supabase initialization, etc) ...
+
+    const PUBLIC_VAPID_KEY = 'BD-zeyWbNzlT9RftIN2bM_V0_ccR6mr6F05HqrAemNDQ4vMg3ScpB2pii4ucNrGw3rwJf0Dc2EdBHpKcCZqe6ZM'; // Pega aquí tu clave real
+
+    async function requestNotificationPermission() {
+        // ... (el código que pegaste arriba)
+    }
+
+    window.onload = () => {
+        // ... tu código existente
+        // AGREGA ESTO para que el usuario pueda activar las notificaciones
+        // O mejor aún, pon un botón en tu HTML que llame a esta función:
+        // <button onclick="requestNotificationPermission()">Activar Notificaciones</button>
+    };
+</script>
 </body>
 </html>
