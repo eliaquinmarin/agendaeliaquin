@@ -620,24 +620,43 @@ async function requestNotificationPermission() {
     }
 }
 </script>
-<script>
-// Agrega esta función de conversión
-function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-}
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
 
-// Y al momento de suscribir, úsala así:
-const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVibWRvdmhzYXZlendqcGhkemZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1OTY0NjcsImV4cCI6MjA5ODE3MjQ2N30.Fu8ywyyg_IwDvGzgdWrqxClYU-9QHNUsHee5yDBwU5E) // <--- ¡AQUÍ ESTÁ EL CAMBIO!
-});
+  // Configuración de tu proyecto (Copiado de Firebase Console)
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdF_65mATjkH71yLFW97fvwQX5Sexf9Tw",
+    authDomain: "notificacionesagenda.firebaseapp.com",
+    projectId: "notificacionesagenda",
+    storageBucket: "notificacionesagenda.firebasestorage.app",
+    messagingSenderId: "168849532431",
+    appId: "1:168849532431:web:f9552e888ece647672e57a"
+  };
+
+  // Inicializar
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+
+  // Función para pedir permiso y obtener el token
+  async function activarNotificaciones() {
+    try {
+      const token = await getToken(messaging, { 
+        vapidKey: 'BBRM4VTrgnH8r5IvX4V6Twx3DXZaFnRXzWb_Y8XtLNYmyx3fGm0xMoGepQdYsFvMp7QFktExFmYAX_YsmxGY7HE' // Esta llave la sacas en Firebase Console > Messaging > Web Push
+      });
+      
+      if (token) {
+        console.log("Token obtenido:", token);
+        // AQUÍ DEBES GUARDAR EL TOKEN EN TU BASE DE DATOS
+        // Ejemplo: await supabase.from('push_subscriptions').insert({ token: token });
+      }
+    } catch (err) {
+      console.error("Error al obtener token:", err);
+    }
+  }
+
+  // Agrega un botón en tu HTML para llamar a esta función:
+  // <button onclick="activarNotificaciones()">🔔 Activar Notificaciones</button>
 </script>
 </body>
 </html>
