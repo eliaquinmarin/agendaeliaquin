@@ -620,5 +620,24 @@ async function requestNotificationPermission() {
     }
 }
 </script>
+<script>
+// Agrega esta función de conversión
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+}
+
+// Y al momento de suscribir, úsala así:
+const subscription = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVibWRvdmhzYXZlendqcGhkemZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1OTY0NjcsImV4cCI6MjA5ODE3MjQ2N30.Fu8ywyyg_IwDvGzgdWrqxClYU-9QHNUsHee5yDBwU5E) // <--- ¡AQUÍ ESTÁ EL CAMBIO!
+});
+</script>
 </body>
 </html>
