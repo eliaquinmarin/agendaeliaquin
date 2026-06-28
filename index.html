@@ -510,10 +510,24 @@
         }
 
         function requestNotificationPermission() {
-            if ("Notification" in window) {
-                Notification.requestPermission().then(updateBellUI);
-            }
+    if (!("Notification" in window)) {
+        alert("Este navegador no soporta notificaciones.");
+        return;
+    }
+
+    Notification.requestPermission().then(permission => {
+        updateBellUI(permission); // Actualiza el icono (tu función original)
+        
+        if (permission === 'granted') {
+            new Notification("¡Notificaciones activadas!", {
+                body: "Recibirás avisos de los próximos programas.",
+                icon: "/favicon.ico" // Asegúrate de que esta ruta exista
+            });
+        } else if (permission === 'denied') {
+            alert("Has bloqueado las notificaciones. Para recibirlas, debes ir a la configuración de tu navegador y permitirlas manualmente.");
         }
+    });
+}
 
         function updateBellUI(permission) {
             const icons = document.querySelectorAll('.icon-bell');
@@ -526,28 +540,40 @@
             });
         }
 
-        function startAgendaDaemon() {
-            setInterval(() => {
-                const ahora = new Date();
-                const diaSemanaEs = daysMap[ahora.getDay()];
-                const tiempoFuturo = new Date(ahora.getTime() + 2 * 60 * 1000);
-                const horaObjetivo = `${String(tiempoFuturo.getHours()).padStart(2, '0')}:${String(tiempoFuturo.getMinutes()).padStart(2, '0')}`;
+     function startAgendaDaemon() {
+    setInterval(() => {
+        const ahora = new Date();
+        const diaSemanaEs = daysMap[ahora.getDay()];
+        const horaActual = formatTime(ahora);
 
-                agendaData.forEach(item => {
-                    if (item.dias.includes(diaSemanaEs) && item.hora === horaObjetivo) {
-                        const uniqueKey = `${item.id}-${horaObjetivo}-${ahora.getDate()}`;
-                        if (!notifiedEvents.has(uniqueKey)) {
-                            notifiedEvents.add(uniqueKey);
-                            if (Notification.permission === "granted") {
-                                new Notification(`🔔 Próxima Difusión`, { body: `Faltan 2 min para "${item.titulo}" (${item.hora}).` });
-                            }
-                            showToast(`Preparando difusión para "${item.titulo}" en 2 minutes.`);
-                        }
+        agendaData.forEach(item => {
+            // Verificamos si el programa toca hoy y es la hora exacta
+            if (item.dias.includes(diaSemanaEs) && item.hora === horaActual) {
+                
+                // Usamos un identificador único basado en ID y fecha para no repetir notificación
+                const uniqueKey = `${item.id}-${ahora.getDate()}-${ahora.getMonth()}`;
+                
+                if (!notifiedEvents.has(uniqueKey)) {
+                    notifiedEvents.add(uniqueKey);
+
+                    if (Notification.permission === "granted") {
+                        new Notification(item.titulo, {
+                            body: `¡Es hora de ${item.titulo}!`,
+                            icon: "/favicon.ico", 
+                            badge: "/favicon.ico", 
+                            vibrate: [200, 100, 200, 100, 200], // Vibración más notable
+                            tag: item.id, // Esto agrupa notificaciones del mismo evento
+                            requireInteraction: true // Mantiene el banner hasta que el usuario lo toque
+                        });
                     }
-                });
-            }, 10000);
-        }
-
+                    
+                    showToast(`Iniciando transmisión: ${item.titulo}`);
+                    console.log(`Notificación enviada: ${item.titulo}`);
+                }
+            }
+        });
+    }, 10000); // Chequeo cada 10 segundos
+}
         window.onload = () => {
             const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
