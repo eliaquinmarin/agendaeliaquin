@@ -450,14 +450,32 @@
                         <p class="text-xs font-bold opacity-60 mb-3">${item.dias.join(', ')}</p>
                         <div class="text-xs bg-slate-950/20 dark:bg-slate-950/40 border border-slate-700/20 dark:border-slate-800/60 rounded-2xl p-4 mb-6 whitespace-pre-wrap break-words h-44 overflow-y-auto leading-relaxed opacity-90">${optimizedText}</div>
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="copyText(\`${encodeURIComponent(optimizedText)}\`)" class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 bg-slate-500/10 hover:bg-slate-500/20 text-slate-400 dark:text-slate-300 font-bold text-xs rounded-xl border border-slate-700/20 dark:border-slate-800/40 transition-all cursor-pointer">
-                            Copiar Texto
-                        </button>
-                        <button onclick="shareWhatsApp(\`${encodeURIComponent(optimizedText)}\`)" class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition-all cursor-pointer">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.411 0 11.989 0c3.183.001 6.177 1.24 8.426 3.492 2.249 2.252 3.483 5.249 3.482 8.432-.004 6.639-5.355 11.987-11.931 11.987-2.006-.002-3.978-.507-5.73-1.472L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.413 9.863-9.849.002-2.634-1.023-5.11-2.89-6.98-1.867-1.868-4.35-2.897-6.987-2.899-5.444 0-9.867 4.414-9.87 9.85-.001 1.761.462 3.479 1.341 5.011l-.995 3.637 3.718-.975zm13.114-6.398c-.296-.149-1.753-.865-2.024-.964-.271-.099-.468-.148-.666.149-.197.297-.764.964-.937 1.162-.172.197-.345.222-.641.074-.296-.149-1.253-.462-2.386-1.472-.882-.787-1.478-1.759-1.65-2.056-.172-.297-.018-.458.13-.606.134-.133.297-.347.445-.52.149-.174.198-.298.297-.496.099-.198.05-.371-.025-.52-.075-.149-.666-1.608-.912-2.201-.24-.577-.483-.499-.666-.508-.171-.008-.369-.01-.567-.01-.197 0-.518.074-.79.371-.271.297-1.036 1.015-1.036 2.477 0 1.462 1.062 2.873 1.211 3.071.149.198 2.09 3.193 5.063 4.479.707.306 1.259.489 1.69.626.711.226 1.36.194 1.872.118.571-.085 1.753-.717 2.001-1.411.248-.694.248-1.289.173-1.411-.074-.123-.272-.198-.57-.347z"/></svg>
-                            WhatsApp
-                        </button>
+<div class="grid grid-cols-5 gap-1 mt-3">
+        <button onclick="copyText('${encodeURIComponent(optimizedText)}')" class="flex flex-col items-center justify-center gap-1 p-2 bg-slate-800 text-slate-400 rounded-lg hover:bg-slate-700 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+            <span class="text-[8px]">Copiar</span>
+        </button>
+
+        <button onclick="shareWhatsApp('${encodeURIComponent(optimizedText)}')" class="flex flex-col items-center justify-center gap-1 p-2 bg-[#25D366] text-white rounded-lg hover:bg-[#128C7E] transition-all">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.411 0 11.989 0c3.183.001 6.177 1.24 8.426 3.492 2.249 2.252 3.483 5.249 3.482 8.432-.004 6.639-5.355 11.987-11.931 11.987-2.006-.002-3.978-.507-5.73-1.472L0 24z"/></svg>
+            <span class="text-[8px]">WA</span>
+        </button>
+
+        <button onclick="shareMedia(this.closest('.custom-card'))" class="flex flex-col items-center justify-center gap-1 p-2 bg-gradient-to-tr from-purple-500 to-pink-500 text-white rounded-lg hover:opacity-90 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            <span class="text-[8px]">IG</span>
+        </button>
+
+        <button onclick="shareText('facebook', '${encodeURIComponent(optimizedText)}')" class="flex flex-col items-center justify-center gap-1 p-2 bg-[#4267B2] text-white rounded-lg hover:bg-[#365899] transition-all">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            <span class="text-[8px]">FB</span>
+        </button>
+
+        <button onclick="shareText('twitter', '${encodeURIComponent(optimizedText)}')" class="flex flex-col items-center justify-center gap-1 p-2 bg-[#1DA1F2] text-white rounded-lg hover:bg-[#1a91da] transition-all">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+            <span class="text-[8px]">X</span>
+        </button>
+    </div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -636,6 +654,58 @@ window.activarNotificaciones = async () => {
         console.error("Error al obtener el token:", err);
     }
 };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+async function shareInstagram(cardElement) {
+    try {
+        // Capturamos el elemento de la tarjeta
+        const canvas = await html2canvas(cardElement, {
+            backgroundColor: '#111a36', // Debe coincidir con tu variable --bg-card
+            scale: 2 // Mejora la calidad de la imagen
+        });
+        
+        canvas.toBlob(async (blob) => {
+            const file = new File([blob], "difusion.png", { type: "image/png" });
+            
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: 'Compartir en Instagram',
+                    text: '¡Mira esta programación!'
+                });
+            } else {
+                showToast("Tu navegador no soporta compartir imágenes directamente.");
+            }
+        });
+    } catch (error) {
+        console.error("Error al capturar la imagen:", error);
+        showToast("Error al generar la imagen");
+    }
+}
+</script>
+<script>
+// Función genérica para abrir redes sociales basadas en texto
+function shareText(platform, text) {
+    const decodedText = decodeURIComponent(text);
+    const url = window.location.href; // Opcional: añade la URL de tu app
+    let shareUrl = "";
+
+    if (platform === 'facebook') {
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(decodedText)}`;
+    } else if (platform === 'twitter') {
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(decodedText)}`;
+    }
+
+    window.open(shareUrl, '_blank', 'width=600,height=400');
+}
+
+// Renombramos la de Instagram a shareMedia para que sea más clara
+async function shareMedia(cardElement) {
+    // Aquí reutilizas la lógica de html2canvas que hicimos antes
+    // ...
+}
 </script>
 </body>
 </html>
