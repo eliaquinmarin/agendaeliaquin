@@ -4,7 +4,6 @@ importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compa
 
 const CACHE_NAME = 'agenda-fe-v1';
 
-// Inicializa Firebase dentro del Service Worker
 firebase.initializeApp({
   apiKey: "AIzaSyDdF_65mATjkH71yLFW97fvwQX5Sexf9Tw",
   projectId: "notificacionesagenda",
@@ -14,9 +13,9 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// 1. Instalación: Fuerza la activación y guarda archivos en caché
+// 1. Instalación
 self.addEventListener('install', (event) => {
-    self.skipWaiting(); 
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(['/', '/index.html']);
@@ -24,7 +23,7 @@ self.addEventListener('install', (event) => {
     );
 });
 
-// 2. Activación: Toma el control y LIMPIA cachés antiguas
+// 2. Activación
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -37,22 +36,38 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// 3. Estrategia de Red: Prioriza internet, luego caché
+// 3. Estrategia de Red
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request).catch(() => caches.match(event.request))
     );
 });
 
-// 4. Firebase Messaging (Manejo de notificaciones en background)
-// Nota: onBackgroundMessage es el estándar de Firebase v9
+// 4. Firebase Messaging: CORREGIDO PARA NOTIFICACIÓN NATIVA
 messaging.onBackgroundMessage((payload) => {
-    console.log('[sw.js] Received background message ', payload);
-    const notificationTitle = payload.notification.title;
+    console.log('[sw.js] Mensaje recibido:', payload);
+    
+    const notificationTitle = payload.notification.title || 'Nueva Notificación';
     const notificationOptions = {
         body: payload.notification.body,
-        icon: '/favicon.ico',
-        badge: '/favicon.ico'
+        icon: '/favicon.ico', 
+        badge: '/favicon.ico',
+        // --- ADICIONES PARA EFECTO NATIVO ---
+        vibrate: [200, 100, 200, 100, 200], // Patrón de vibración claro
+        silent: false,                     // Asegura que el sonido del sistema suene
+        requireInteraction: true,          // La notificación no desaparece sola
+        data: {
+            url: payload.fcmOptions?.link || '/' // Abre el link si viene en el payload
+        }
     };
+
     self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// 5. Opcional: Manejo del clic en la notificación
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    event.waitUntil(
+        clients.openWindow(event.notification.data.url)
+    );
 });
