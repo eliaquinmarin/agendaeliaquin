@@ -43,20 +43,20 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-// 4. Firebase Messaging: CORREGIDO PARA NOTIFICACIÓN NATIVA
+// 4. Firebase Messaging: CORREGIDO Y SINTAXIS AJUSTADA
 messaging.onBackgroundMessage((payload) => {
     console.log('[sw.js] Mensaje recibido:', payload);
     
     const notificationTitle = payload.notification.title || 'Nueva Notificación';
     const notificationOptions = {
-    body: payload.notification.body,
-    icon: '/icon.svg',      // Apunta al archivo físico
-    badge: '/icon.svg',     // Se recomienda que el badge sea una versión simple monocromática
-    vibrate: [200, 100, 200, 100, 200],
-    silent: false,
-    requireInteraction: true
+        body: payload.notification.body,
+        icon: '/icon.svg',      // Asegúrate de tener este archivo en la raíz
+        badge: '/icon.svg',     
+        vibrate: [200, 100, 200, 100, 200], // Patrón de vibración nativo
+        silent: false,          // Permite sonido del sistema
+        requireInteraction: true, // Mantiene la notificación visible
         data: {
-            url: payload.fcmOptions?.link || '/' // Abre el link si viene en el payload
+            url: payload.fcmOptions?.link || '/' // URL de redirección
         }
     };
 
