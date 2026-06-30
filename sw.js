@@ -49,13 +49,12 @@ messaging.onBackgroundMessage((payload) => {
     
     const notificationTitle = payload.notification.title || 'Nueva Notificación';
     const notificationOptions = {
-        body: payload.notification.body,
-        icon: '/favicon.ico', 
-        badge: '/favicon.ico',
-        // --- ADICIONES PARA EFECTO NATIVO ---
-        vibrate: [200, 100, 200, 100, 200], // Patrón de vibración claro
-        silent: false,                     // Asegura que el sonido del sistema suene
-        requireInteraction: true,          // La notificación no desaparece sola
+    body: payload.notification.body,
+    icon: '/icon.svg',      // Apunta al archivo físico
+    badge: '/icon.svg',     // Se recomienda que el badge sea una versión simple monocromática
+    vibrate: [200, 100, 200, 100, 200],
+    silent: false,
+    requireInteraction: true
         data: {
             url: payload.fcmOptions?.link || '/' // Abre el link si viene en el payload
         }
